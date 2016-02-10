@@ -1,0 +1,68 @@
+proc string GenBuilding (int $w, int $h, int $d) {
+	float $x, $y, $z;
+	string $s[];
+	string $objects[];
+
+	// for each floor
+	for ($y = 0.5; $y < $h; $y+=1)
+	{
+		// create the floor bottom
+		$s = `polyCube -w ($w+0.15) -h 0.15 -d ($d+0.15)`;
+		$objects[`size $objects`] = $s[0];
+		move 0 ($y-0.5) 0;
+
+		float $windowSize = 0.6;
+		for ($x = -$w/2.0 + 0.5; $x <= $w/2.0 - 0.5; $x+=1) {
+			$s = `polyCube -w $windowSize -h $windowSize -d ($d + 0.1)`;
+			$objects[`size $objects`] = $s[0];
+			move ($x) ($y) 0;
+			$s = `polyCube -w $windowSize -h (0.1) -d ($d + 0.2)`;
+			$objects[`size $objects`] = $s[0];
+			move ($x) ($y - $windowSize / 2.0) 0;
+		}
+		for ($z = -$d/2.0 + 0.5; $z <= $d/2.0 - 0.5; $z+=1) {
+			$s = `polyCube -w ($w + 0.1) -h $windowSize -d $windowSize`;
+			$objects[`size $objects`] = $s[0];
+			move 0 ($y) ($z);
+			$s = `polyCube -w ($w + 0.2) -h (0.1) -d $windowSize`;
+			$objects[`size $objects`] = $s[0];
+			move 0 ($y - $windowSize / 2.0) ($z);
+		}
+	}
+	// create ceiling
+	$s = `polyCube -w ($w+0.15) -h 0.15 -d ($d+0.15)`;
+	$objects[`size $objects`] = $s[0];
+	move 0 ($h) 0;
+
+	// create building body
+	$s = `polyCube -w $w -h $h -d $d`;
+	$objects[`size $objects`] = $s[0];
+	move 0 ($h/2 + 0.5) 0;
+
+	// merge everything we just created
+	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;
+	return $s[0];
+}
+
+
+
+
+proc GenCity (int $w, int $h, int $d) {
+	polyCube -w $w -h 0.1 -d $d;
+
+	float $x, $y, $z;
+	float $halfW = $w/2;
+	float $halfD = $d/2;
+	for ($x = -$halfW; $x < $halfW; $x+=2)
+	{
+		for ($z = -$halfD; $z < $halfD; $z+=2)
+		{
+			float $y = (`rand ($h/10) ($h)`);
+			polyCube -w 1 -h $y -d 1;
+			move $x ($y / 2) $z;
+		}
+	}
+}
+
+
+GenBuilding(7, 25, 10);

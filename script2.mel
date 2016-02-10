@@ -10,34 +10,46 @@ proc string GenBuilding (int $w, int $h, int $d) {
 		$s = `polyCube -w ($w+0.15) -h 0.15 -d ($d+0.15)`;
 		$objects[`size $objects`] = $s[0];
 		move 0 ($y-0.5) 0;
+		sets -e -forceElement lambert4SG;
 
+		// create windows
 		float $windowSize = 0.6;
 		for ($x = -$w/2.0 + 0.5; $x <= $w/2.0 - 0.5; $x+=1) {
+			// window top
 			$s = `polyCube -w $windowSize -h $windowSize -d ($d + 0.1)`;
 			$objects[`size $objects`] = $s[0];
 			move ($x) ($y) 0;
+			sets -e -forceElement lambert3SG;
+			// window bottm
 			$s = `polyCube -w $windowSize -h (0.1) -d ($d + 0.2)`;
 			$objects[`size $objects`] = $s[0];
 			move ($x) ($y - $windowSize / 2.0) 0;
+			sets -e -forceElement lambert2SG;
 		}
 		for ($z = -$d/2.0 + 0.5; $z <= $d/2.0 - 0.5; $z+=1) {
+			// window top
 			$s = `polyCube -w ($w + 0.1) -h $windowSize -d $windowSize`;
 			$objects[`size $objects`] = $s[0];
 			move 0 ($y) ($z);
+			sets -e -forceElement lambert3SG;
+			// window bottom
 			$s = `polyCube -w ($w + 0.2) -h (0.1) -d $windowSize`;
 			$objects[`size $objects`] = $s[0];
 			move 0 ($y - $windowSize / 2.0) ($z);
+			sets -e -forceElement lambert2SG;
 		}
 	}
 	// create ceiling
 	$s = `polyCube -w ($w+0.15) -h 0.15 -d ($d+0.15)`;
 	$objects[`size $objects`] = $s[0];
 	move 0 ($h) 0;
+	sets -e -forceElement lambert4SG;
 
 	// create building body
 	$s = `polyCube -w $w -h $h -d $d`;
 	$objects[`size $objects`] = $s[0];
 	move 0 ($h/2 + 0.5) 0;
+	sets -e -forceElement lambert2SG;
 
 	// merge everything we just created
 	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;
@@ -50,19 +62,20 @@ proc string GenBuilding (int $w, int $h, int $d) {
 proc GenCity (int $w, int $h, int $d) {
 	polyCube -w $w -h 0.1 -d $d;
 
-	float $x, $y, $z;
+	float $x, $z;
 	float $halfW = $w/2;
 	float $halfD = $d/2;
 	for ($x = -$halfW; $x < $halfW; $x+=2)
 	{
 		for ($z = -$halfD; $z < $halfD; $z+=2)
 		{
-			float $y = (`rand ($h/10) ($h)`);
-			polyCube -w 1 -h $y -d 1;
-			move $x ($y / 2) $z;
+			int $y = (int)(`rand ($h/10) ($h)`);
+			print($y);
+			GenBuilding(1, $y, 1);
+			move -x $x -z $z;
 		}
 	}
 }
 
 
-GenBuilding(7, 25, 10);
+GenBuilding(5, 15, 8);

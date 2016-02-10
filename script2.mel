@@ -48,7 +48,7 @@ proc string GenBuilding (int $w, int $h, int $d) {
 	// create building body
 	$s = `polyCube -w $w -h $h -d $d`;
 	$objects[`size $objects`] = $s[0];
-	move 0 ($h/2 + 0.5) 0;
+	move 0 ($h/2.0) 0;
 	sets -e -forceElement lambert2SG;
 
 	// merge everything we just created
@@ -65,17 +65,16 @@ proc GenCity (int $w, int $h, int $d) {
 	float $x, $z;
 	float $halfW = $w/2;
 	float $halfD = $d/2;
-	for ($x = -$halfW; $x < $halfW; $x+=2)
+	for ($x = -$halfW; $x < $halfW; $x+=4)
 	{
-		for ($z = -$halfD; $z < $halfD; $z+=2)
+		for ($z = -$halfD; $z < $halfD; $z+=4)
 		{
 			int $y = (int)(`rand ($h/10) ($h)`);
-			print($y);
-			GenBuilding(1, $y, 1);
+			GenBuilding(3, $y, 3);
 			move -x $x -z $z;
 		}
 	}
 }
 
 
-GenBuilding(5, 15, 8);
+GenCity(20, 25, 20);

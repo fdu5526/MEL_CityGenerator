@@ -1,9 +1,26 @@
+
+
+
+
 proc string GenBuilding (int $w, int $h, int $d) {
 	float $x, $y, $z;
 	string $s[];
 	string $objects[];
+	string $window[];
+	float $windowSize = 0.6;
+
+
+	$s = `polyCube -w $windowSize -h $windowSize -d ($d + 0.1)`;
+	$window[0] = $s[0];
+	sets -e -forceElement blinn1SG;
+	$s = `polyCube -w $windowSize -h (0.1) -d ($d + 0.2)`;
+	move -y (-$windowSize / 2.0);
+	sets -e -forceElement lambert3SG;
+	$s = `polyUnite -ch 1 -mergeUVSets 1 $window[0] $s[0]`;
+	$window[0] = $s[0];
 
 	// for each floor
+	/*
 	for ($y = 0.5; $y < $h; $y+=1)
 	{
 		// create the floor bottom
@@ -12,14 +29,14 @@ proc string GenBuilding (int $w, int $h, int $d) {
 		move 0 ($y-0.5) 0;
 		sets -e -forceElement lambert3SG;
 
-		// create windows
-		float $windowSize = 0.6;
+		// create windows	
 		for ($x = -$w/2.0 + 0.5; $x <= $w/2.0 - 0.5; $x+=1) {
 			// window top
 			$s = `polyCube -w $windowSize -h $windowSize -d ($d + 0.1)`;
 			$objects[`size $objects`] = $s[0];
 			move ($x) ($y) 0;
-			sets -e -forceElement lambert4SG;
+			sets -e -forceElement blinn1SG;
+
 			// window bottom
 			$s = `polyCube -w $windowSize -h (0.1) -d ($d + 0.2)`;
 			$objects[`size $objects`] = $s[0];
@@ -31,7 +48,7 @@ proc string GenBuilding (int $w, int $h, int $d) {
 			$s = `polyCube -w ($w + 0.1) -h $windowSize -d $windowSize`;
 			$objects[`size $objects`] = $s[0];
 			move 0 ($y) ($z);
-			sets -e -forceElement lambert4SG;
+			sets -e -forceElement blinn1SG;
 			// window bottom
 			$s = `polyCube -w ($w + 0.2) -h (0.1) -d $windowSize`;
 			$objects[`size $objects`] = $s[0];
@@ -52,6 +69,9 @@ proc string GenBuilding (int $w, int $h, int $d) {
 	sets -e -forceElement lambert2SG;
 
 	// merge everything we just created
-	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;
+	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;*/
 	return $s[0];
 }
+
+
+GenBuilding(5,5,5);

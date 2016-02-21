@@ -2,12 +2,12 @@
 proc string GenWindow (float $w, 
 											 float $h, 
 											 float $d, 
-											 int $extendD) {
+											 int $extendDepth) {
 	string $s[];
 	string $window;
 	float $w1, $w2, $d1, $d2;
 
-	if ($extendD) { // extend depth to face out the wall
+	if ($extendDepth) { // extend depth to face out the wall
 		$w1 = $w2 = $w;
 		$d1 = $d + 0.1;
 		$d2 = $d + 0.2;
@@ -31,12 +31,14 @@ proc string GenWindow (float $w,
 	return $s[0];
 }
 
+
 // generate a single floor, windows + floor base
 proc string GenFloor (int $w,
 											int $h,
 											int $d) {
 	string $s[];
 	string $objects[];
+	int $objectsIndex = 0;
 	string $windows[];
 	float $windowSize = 0.6;
 
@@ -46,7 +48,8 @@ proc string GenFloor (int $w,
 
 	// create floor
 	$s = `polyCube -w ($w+0.15) -h 0.15 -d ($d+0.15)`;
-	$objects[`size $objects`] = $s[0];
+	$objects[$objectsIndex] = $s[0];
+	$objectsIndex++;
 	sets -e -forceElement lambert3SG;
 
 	// create windows	
@@ -54,14 +57,16 @@ proc string GenFloor (int $w,
 		// window top
 		select -r $windows[0];
 		$s = `duplicate -rr`;
-		$objects[`size $objects`] = $s[0];
-		move ($x) 0.5 0;
+		$objects[$objectsIndex] = $s[0];
+		$objectsIndex++;
+		move -x ($x) -y 0.5;
 	}
 	for ($z = -$d/2.0 + 0.5; $z <= $d/2.0 - 0.5; $z+=1) {
 		select -r $windows[1];
 		$s = `duplicate -rr`;
-		$objects[`size $objects`] = $s[0];
-		move 0 0.5 ($z);
+		$objects[$objectsIndex] = $s[0];
+		$objectsIndex++;
+		move -y 0.5 -z ($z);
 	}
 
 	// delete base windows
@@ -75,39 +80,46 @@ proc string GenFloor (int $w,
 }
 
 // create a single building based on input dimension
-proc string GenBuilding (int $w, int $h, int $d) {
-	float $x, $y, $z;
+proc string GenBuilding (int $w, 
+												 int $h, 
+												 int $d) {
+	int $y;
 	string $s[];
 	string $objects[];
-	string $floor;
+	int $objectsIndex = 0;
 
 	// create ceiling
 	$s = `polyCube -w ($w+0.15) -h 0.15 -d ($d+0.15)`;
-	$objects[`size $objects`] = $s[0];
-	move 0 ($h) 0;
+	$objects[$objectsIndex] = $s[0];
+	$objectsIndex++;
+	move -y ($h);
 	sets -e -forceElement lambert3SG;
 
+	// create the first floor
+	$objects[$objectsIndex] = GenFloor($w, $h, $d);
+	$objectsIndex++;
 
-	$floor = GenFloor($w, $h, $d);
-	$objects[`size $objects`] = $floor;
-
-	// create each floor
+	// create the rest of the floor based on first floor
 	for ($y = 1; $y < $h; $y+=1)
 	{
-		// create the floor bottom
-		select -r $floor;
+		// create duplicate, move it up
+		select -r $objects[1];
 		$s = `duplicate -rr`;
-		$objects[`size $objects`] = $s[0];
+		$objects[$objectsIndex] = $s[0];
+		$objectsIndex++;
 		move -y ($y);
 	}
 
 	// create building body
 	$s = `polyCube -w $w -h $h -d $d`;
-	$objects[`size $objects`] = $s[0];
-	move 0 ($h/2.0) 0;
+	$objects[$objectsIndex] = $s[0];
+	move -y ($h/2.0);
 	sets -e -forceElement lambert2SG;
 
 	// merge everything we just created
 	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;
 	return $s[0];
 }
+
+
+GenBuilding(5,5,5);

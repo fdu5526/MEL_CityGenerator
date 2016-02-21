@@ -1,6 +1,10 @@
 import maya.cmds as cmds
 import maya.mel as mel
 import random
+import time
+
+random.seed(0)
+
 
 
 def GenCity (w, h, d):
@@ -51,5 +55,6 @@ def GenCity (w, h, d):
 
 
 
-
+t = time.time()
 GenCity(30, 25, 30)
+print(time.time() - t)

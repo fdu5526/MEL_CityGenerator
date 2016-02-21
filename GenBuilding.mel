@@ -1,8 +1,5 @@
 // generate a single window
-proc string GenWindow (float $w, 
-											 float $h, 
-											 float $d, 
-											 int $extendDepth) {
+proc string GenWindow (float $w, float $h, float $d, int $extendDepth) {
 	string $s[];
 	string $window;
 	float $w1, $w2, $d1, $d2;
@@ -33,9 +30,7 @@ proc string GenWindow (float $w,
 
 
 // generate a single floor, windows + floor base
-proc string GenFloor (int $w,
-											int $h,
-											int $d) {
+proc string GenFloor (int $w, int $h, int $d) {
 	string $s[];
 	string $objects[];
 	int $objectsIndex = 0;
@@ -80,9 +75,7 @@ proc string GenFloor (int $w,
 }
 
 // create a single building based on input dimension
-proc string GenBuilding (int $w, 
-												 int $h, 
-												 int $d) {
+proc string GenBuilding (int $w, int $h, int $d) {
 	int $y;
 	string $s[];
 	string $objects[];
@@ -120,6 +113,3 @@ proc string GenBuilding (int $w,
 	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;
 	return $s[0];
 }
-
-
-GenBuilding(5,5,5);

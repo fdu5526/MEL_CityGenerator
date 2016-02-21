@@ -41,7 +41,6 @@ def GenCity (w, h, d):
 			# create the actual building
 			mel.eval("GenBuilding("+ str(dx) + ","+ str(dy) + "," + str(dz) + ");")
 			mel.eval("move -x " + str(x + dx/2.0) + " -z " + str(z + dz/2.0) + ";")
-
 						
 			# mark all the spaces this building takes up as claimed
 			for cx in range(x, min(w, x + dx)):
@@ -53,6 +52,4 @@ def GenCity (w, h, d):
 
 
 
-t = time.time()
 GenCity(30, 25, 30)
-print(time.time() - t)

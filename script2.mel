@@ -1,4 +1,34 @@
+proc string GenWindow (float $w, 
+											 float $h, 
+											 float $d, 
+											 int $extendD) {
+	string $s[];
+	string $window;
+	float $w1, $w2, $d1, $d2;
 
+	if ($extendD) { // extend depth to face out the wall
+		$w1 = $w2 = $w;
+		$d1 = $d + 0.1;
+		$d2 = $d + 0.2;
+	} else { // extend width to face out the wall
+		$d1 = $d2 = $d;
+		$w1 = $w + 0.1;
+		$w2 = $w + 0.2;
+	}
+	// generate window
+	$s = `polyCube -w $w1 -h $h -d ($d1)`;
+	$window = $s[0];
+	sets -e -forceElement blinn1SG;
+	
+	// generate window bottom
+	$s = `polyCube -w $w2 -h (0.1) -d ($d2)`;
+	move -y (-$h / 2.0);
+	sets -e -forceElement lambert3SG;
+
+	// merge them as one, return it
+	$s = `polyUnite -ch 1 -mergeUVSets 1 $window $s[0]`;
+	return $s[0];
+}
 
 
 
@@ -6,27 +36,21 @@ proc string GenBuilding (int $w, int $h, int $d) {
 	float $x, $y, $z;
 	string $s[];
 	string $objects[];
-	string $window[];
+	string $windows[];
 	float $windowSize = 0.6;
 
-
-	$s = `polyCube -w $windowSize -h $windowSize -d ($d + 0.1)`;
-	$window[0] = $s[0];
-	sets -e -forceElement blinn1SG;
-	$s = `polyCube -w $windowSize -h (0.1) -d ($d + 0.2)`;
-	move -y (-$windowSize / 2.0);
-	sets -e -forceElement lambert3SG;
-	$s = `polyUnite -ch 1 -mergeUVSets 1 $window[0] $s[0]`;
-	$window[0] = $s[0];
+	// get base windows to copy
+	$windows[0] = GenWindow($windowSize, $windowSize, $d, true);
+	$windows[1] = GenWindow($w, $windowSize, $windowSize, false);
+	
 
 	// for each floor
-	/*
-	for ($y = 0.5; $y < $h; $y+=1)
+		for ($y = 0.5; $y < $h; $y+=1)
 	{
 		// create the floor bottom
 		$s = `polyCube -w ($w+0.15) -h 0.15 -d ($d+0.15)`;
 		$objects[`size $objects`] = $s[0];
-		move 0 ($y-0.5) 0;
+		move -y ($y-0.5);
 		sets -e -forceElement lambert3SG;
 
 		// create windows	
@@ -69,7 +93,7 @@ proc string GenBuilding (int $w, int $h, int $d) {
 	sets -e -forceElement lambert2SG;
 
 	// merge everything we just created
-	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;*/
+	$s = `polyUnite -ch 1 -mergeUVSets 1 $objects`;
 	return $s[0];
 }
 

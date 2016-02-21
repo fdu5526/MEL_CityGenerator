@@ -24,10 +24,12 @@ def GenCity (w, h, d):
 				z = z + 1
 				continue
 
+			# generate a random size
 			dx = random.randint(3, 6)
 			dy = random.randint(h/7, h)
 			dz = random.randint(3, 6)
 
+			# keep building within bounds
 			dx = (w-x) if (x+dx > w) else dx
 			dz = (d-z) if (z+dz > d) else dz
 
@@ -35,22 +37,18 @@ def GenCity (w, h, d):
 			if (dx < 3 or dz < 3):
 				z = z + 1
 				continue
-			
-			#mel.eval("polyCube -w (" + str(dx) + ") -h " + str(dy) + " -d " + str(dz) + ";")
-			#mel.eval("move -y " + str(dy/2.0) + ";")
+
+			# create the actual building
 			mel.eval("GenBuilding("+ str(dx) + ","+ str(dy) + "," + str(dz) + ");")
 			mel.eval("move -x " + str(x + dx/2.0) + " -z " + str(z + dz/2.0) + ";")
 
 						
-
+			# mark all the spaces this building takes up as claimed
 			for cx in range(x, min(w, x + dx)):
 				for cz in range(z, min(d, z + dz)):
 					cityGrid[cx][cz] = True
 
-			
-
 			z = z + 1
-
 		x = x + 1
 
 

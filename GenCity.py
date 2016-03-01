@@ -8,7 +8,7 @@ random.seed(0)
 
 
 def GenCity (w, h, d):
-	cityGrid = [[False for x in range(w)] for z in range(d)]
+	cityGrid = [[False for z in range(d)] for x in range(w)]
 	
 	x = 0
 	while (x < w):
@@ -52,4 +52,4 @@ def GenCity (w, h, d):
 
 
 
-GenCity(30, 25, 30)
+GenCity(60, 25, 30)

@@ -31,14 +31,15 @@ random.seed(0)
 
 # generate default sphere
 #sphere = cmds.polyTorus(r=18.27411, sr=4.8)[0]
-sphere = cmds.polySphere(r=20.0)[0]
-cmds.polySmooth(sphere)
-cmds.polySmooth(sphere)
+#sphere = cmds.polySphere(r=20.0)[0]
+#cmds.polySmooth(sphere)
+#cmds.polySmooth(sphere)
 
 #cmds.refresh()
 
+sphere = "generic_male_01:MeshShape"
 numVertices = cmds.polyEvaluate(sphere)["vertex"]
-numTransform = numVertices / 5
+numTransform = numVertices / 10
 
 for v in range (0, numTransform):
 	
@@ -51,12 +52,12 @@ for v in range (0, numTransform):
 		cmds.select(name)
 		selection = softSelection()
 
-		x = coords[0] * random.uniform(-0.2, 0.2)
-		y = coords[1] * random.uniform(-0.2, 0.2)
-		z = coords[2] * random.uniform(-0.2, 0.2)
+		x = coords[0] * random.uniform(-0.02, 0.02)
+		y = coords[1] * random.uniform(-0.02, 0.02)
+		z = coords[2] * random.uniform(-0.02, 0.02)
 
 		# go back, set a key frame
-		cmds.currentTime(v - 20)
+		cmds.currentTime(max(v - 20, 0))
 		cmds.select(selection)
 		cmds.setKeyframe()
 

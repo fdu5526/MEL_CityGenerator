@@ -1,0 +1,25 @@
+int $c=0;
+int $count=0;
+while ($c<=50) { 
+	$c=$c+1;
+
+	polyCube -w 11;
+	move 0 (2*$c) -5;
+
+	while ($count<=100)  { 
+		$count=$count+1;
+		setKeyframe -v 0 -t 0 -at translateX;
+		setKeyframe -v (10*sin($count)) -t ((4*$count)+($c)) -at translateX;
+		setKeyframe -v (sin($count)) -t ((4*$count)+($c)) -at lambert1.co;
+	}
+	$count=0;
+}
+setKeyframe "lambert1.color";
+int $i;
+for ($i=0; $i<100; $i++) {
+	setAttr "lambert1.color" -type double3 (sin($i)) (cos($i)) (cos($i)) ;
+	currentTime ($i*10) ;
+	autoKeyframe;
+}
+
+//www.youtube.com/watch?v=QqWmZI7BRRs

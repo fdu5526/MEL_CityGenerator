@@ -52,4 +52,4 @@ def GenCity (w, h, d):
 
 
 
-GenCity(60, 25, 30)
+GenCity(30, 25, 30)
